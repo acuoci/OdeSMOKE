@@ -108,7 +108,7 @@ namespace OdeSMOKE
 		/*!
 		    Returns the current solution
 		*/
-		const Vector& y() const { return y_; }
+		const Vector& y() const { return this->y_; }
 
 	protected:
 

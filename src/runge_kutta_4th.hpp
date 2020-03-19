@@ -70,29 +70,29 @@ namespace OdeSMOKE
 		max_enlargement_ratio_ = 4.;
 		stabilization_factor_ = 0.;
 
-		OdeSMOKE::resize<Vector>(number_of_equations_,vb);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k2_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k3_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k4_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,vb);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k2_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k3_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k4_);
 
-		OdeSMOKE::resize<Vector>(number_of_equations_,dy_over_dx_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,dy_over_dx_old_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,y_2h_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,y_h_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,dy_over_dx_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,dy_over_dx_old_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y_2h_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y_h_);
 	}
 
 	template<typename ODESystemObject, typename Vector>
 	void OdeRungeKutta4th<ODESystemObject, Vector>::SetDefaultConditions()
 	{
-		OdeSMOKE::resize<Vector>(number_of_equations_,y_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,y0_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,abs_tolerances_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,rel_tolerances_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y0_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,abs_tolerances_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,rel_tolerances_);
 
-		for(unsigned int i=0; i<number_of_equations_;i++)
+		for(unsigned int i=0; i< this->number_of_equations_;i++)
 			rel_tolerances_[i]=1.e-7;
 		
-		for(unsigned int i=0; i<number_of_equations_;i++)
+		for(unsigned int i=0; i< this->number_of_equations_;i++)
 			abs_tolerances_[i]=1.e-12;
 
 		first_step_   = 0.;
@@ -111,9 +111,9 @@ namespace OdeSMOKE
 	template<typename ODESystemObject, typename Vector>
 	void OdeRungeKutta4th<ODESystemObject, Vector>::AdvanceAdaptiveStepSize(const double tF)
 	{
-		GetFunctions(x_, y_, dy_over_dx_);
+		this->GetFunctions(x_, y_, dy_over_dx_);
 		number_function_evaluations_++;
-		PrintStep(x_, y_, dy_over_dx_);
+		this->PrintStep(x_, y_, dy_over_dx_);
 
 		for(;;)
 		{
@@ -127,7 +127,7 @@ namespace OdeSMOKE
 
 			// Advance one step
 			AdvanceOverSingleStep();
-			PrintStep(x_, y_, dy_over_dx_);
+			this->PrintStep(x_, y_, dy_over_dx_);
 			number_steps_++;
 			
 			// If the current step is the final abscissa the required integration is done
@@ -135,7 +135,7 @@ namespace OdeSMOKE
 				break; 
 
 			// Update the functions
-			GetFunctions(x_, y_, dy_over_dx_);
+			this->GetFunctions(x_, y_, dy_over_dx_);
 			number_function_evaluations_++;
 		}
 	}
@@ -174,7 +174,7 @@ namespace OdeSMOKE
 			// from y_ to y_h_
 			Step(x_old,y_,dy_over_dx_old_,y_2h_);
 			x_ = x_old + h_;
-			GetFunctions(x_,y_2h_,dy_over_dx_);
+			this->GetFunctions(x_,y_2h_,dy_over_dx_);
 			Step(x_, y_2h_,dy_over_dx_,y_h_);
 
 			// Perform a single integration with step equal to 2h
@@ -185,7 +185,7 @@ namespace OdeSMOKE
 			// Searching for the maximum error between the 2 solutions
 			// This is to estimate the local error
 			double maximum = 1.e-32;
-			for(unsigned int i=0; i<number_of_equations_;i++)
+			for(unsigned int i=0; i< this->number_of_equations_;i++)
 			{
 				const double aux = fabs(y_h_[i]-y_2h_[i])/(abs_tolerances_[i] + rel_tolerances_[i]*fabs(y_h_[i]));
 				if(aux > maximum)
@@ -221,7 +221,7 @@ namespace OdeSMOKE
 			{
 				number_accepted_steps_++;
 				
-				for(unsigned int i=0; i<number_of_equations_;++i)
+				for(unsigned int i=0; i< this->number_of_equations_;++i)
 					y_[i] = y_h_[i]+(y_h_[i]-y_2h_[i])/15.;
 
 				x_ = x_old + h_;
@@ -244,15 +244,15 @@ namespace OdeSMOKE
 		//k1_ = dy_over_dx_in;
 		//vb = y_in+a21*k1_*h_;
 		sum_plus_scalar_multiplication(&vb, y_in, a21star, dy_over_dx_in);
-		GetFunctions(x_in+h_*c2, vb, k2_);
+		this->GetFunctions(x_in+h_*c2, vb, k2_);
 
 		//vb = y_in+a32*k2_*h_;
 		sum_plus_scalar_multiplication(&vb, y_in, a32star, k2_);
-		GetFunctions(x_in+h_*c3, vb, k3_);
+		this->GetFunctions(x_in+h_*c3, vb, k3_);
 
 		//vb = y_in+k3_*h_;
 		sum_plus_scalar_multiplication(&vb, y_in, h_, k3_);
-		GetFunctions(x_in+h_*c4, vb, k4_);
+		this->GetFunctions(x_in+h_*c4, vb, k4_);
 
 		//y_out = y_in + (b1*k1_+b2*k2_+b3*k3_+b4*k4_)*h_;
 		sum_plus_scalar_multiplication(&y_out, y_in, b1star, dy_over_dx_in, b2star, k2_, b3star, k3_, b4star, k4_);

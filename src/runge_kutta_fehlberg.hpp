@@ -132,30 +132,30 @@ namespace OdeSMOKE
 		max_enlargement_ratio_ = 4.;
 		stabilization_factor_ = 0;
 
-		OdeSMOKE::resize<Vector>(number_of_equations_,k2_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k3_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k4_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k5_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,k6_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,y4_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k2_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k3_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k4_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k5_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,k6_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y4_);
 
-		OdeSMOKE::resize<Vector>(number_of_equations_,dy_over_dx_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,y_h_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,vb);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,dy_over_dx_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y_h_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,vb);
 	}
 
 	template<typename ODESystemObject, typename Vector>
 	void OdeRungeKuttaFehlberg<ODESystemObject, Vector>::SetDefaultConditions()
 	{
-		OdeSMOKE::resize<Vector>(number_of_equations_,y_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,y0_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,abs_tolerances_);
-		OdeSMOKE::resize<Vector>(number_of_equations_,rel_tolerances_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,y0_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,abs_tolerances_);
+		OdeSMOKE::resize<Vector>(this->number_of_equations_,rel_tolerances_);
 
-		for(unsigned int i=0; i<number_of_equations_;i++)
+		for(unsigned int i=0; i< this->number_of_equations_;i++)
 			rel_tolerances_[i]=1.e-7;
 		
-		for(unsigned int i=0; i<number_of_equations_;i++)
+		for(unsigned int i=0; i< this->number_of_equations_;i++)
 			abs_tolerances_[i]=1.e-12;
 
 		first_step_   = 0.;
@@ -229,7 +229,7 @@ namespace OdeSMOKE
 			// Searching for the maximum error between the 2 solutions
 			// This is to estimate the local error
 			double maximum = 1.e-64;
-			for(unsigned int i=0; i<number_of_equations_;i++)
+			for(unsigned int i=0; i< this->number_of_equations_;i++)
 			{
 				const double aux = fabs(y_h_[i]-y4_[i])/(abs_tolerances_[i] + rel_tolerances_[i]*fabs(y_h_[i]));
 				if(aux > maximum)

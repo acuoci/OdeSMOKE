@@ -74,7 +74,7 @@ namespace OdeSMOKE
 		*/
 		void Info() const;
 
-	private:
+	protected:
 
 		void SetDefaultConditions();
 
@@ -108,7 +108,7 @@ namespace OdeSMOKE
 		*/
 		void Step(const double x_in, const Vector& y_in, const Vector& dy_over_dx_in, Vector& y_out);
 
-	private:
+	protected:
 
 		static const double a21;
 		static const double a32;

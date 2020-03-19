@@ -38,28 +38,28 @@ namespace OdeSMOKE
 	template<typename Vector, typename Solver>
 	void ODESolverVirtualClass<Vector,Solver>::SetInitialConditions(const Vector& y0)
 	{
-		if (y0.size() != number_of_equations_)
+		if (y0.size() != this->number_of_equations_)
 			FatalError("The size of the initial condition vector is wrong");
 
-		y0_ = y0;
+		this->y0_ = y0;
 	}
 
 	template<typename Vector, typename Solver>
 	void ODESolverVirtualClass<Vector,Solver>::SetAbsoluteTolerances(const Vector& abs_tolerances)
 	{
-		if (abs_tolerances.size() != number_of_equations_)
+		if (abs_tolerances.size() != this->number_of_equations_)
 			FatalError("The size of the absolute tolerance vector is wrong");
 
-		abs_tolerances_ = abs_tolerances;
+		this->abs_tolerances_ = abs_tolerances;
 	}
 
 	template<typename Vector, typename Solver>
 	void ODESolverVirtualClass<Vector,Solver>::SetRelativeTolerances(const Vector& rel_tolerances)
 	{
-		if (rel_tolerances.size() != number_of_equations_)
+		if (rel_tolerances.size() != this->number_of_equations_)
 			FatalError("The size of the relative tolerance vector is wrong");
 
-		rel_tolerances_ = rel_tolerances;
+		this->rel_tolerances_ = rel_tolerances;
 	}
 
 	template<typename Vector, typename Solver>
@@ -68,7 +68,7 @@ namespace OdeSMOKE
 		if (abs_tolerance < 1.e-32)
 			FatalError("The user-defined absolute tolerance is too small");
 
-		abs_tolerances_.setConstant(abs_tolerance);
+		this->abs_tolerances_.setConstant(abs_tolerance);
 	}
 
 	template<typename Vector, typename Solver>
@@ -77,7 +77,7 @@ namespace OdeSMOKE
 		if (rel_tolerance < 1.e-32)
 			FatalError("The user-defined relative tolerance is too small");
 
-		rel_tolerances_.setConstant(rel_tolerance);
+		this->rel_tolerances_.setConstant(rel_tolerance);
 	}
 
 	template<typename Vector, typename Solver>
@@ -86,7 +86,7 @@ namespace OdeSMOKE
 		if (max_number_steps <= 0)
 			FatalError("The user-defined maximum number of steps must be at least equal to 1");
 
-		max_number_steps_ = max_number_steps;
+		this->max_number_steps_ = max_number_steps;
 	}
 		
 	template<typename Vector, typename Solver>
@@ -95,8 +95,8 @@ namespace OdeSMOKE
 		if (max_step <= 0)
 			FatalError("The user-defined maximum step must be larger than 0");
 
-		max_step_ = max_step;
-		user_defined_max_step_ = true;
+		this->max_step_ = max_step;
+		this->user_defined_max_step_ = true;
 	}
 
 	template<typename Vector, typename Solver>
@@ -105,8 +105,8 @@ namespace OdeSMOKE
 		if (min_step <= 0)
 			FatalError("The user-defined minimum step must be larger than 0");
 
-		min_step_ = min_step;
-		user_defined_min_step_ = true;
+		this->min_step_ = min_step;
+		this->user_defined_min_step_ = true;
 	}
 
 	template<typename Vector, typename Solver>
@@ -115,8 +115,8 @@ namespace OdeSMOKE
 		if (first_step <= 0)
 			FatalError("The user-defined first step must be larger than 0");
 
-		first_step_ = first_step;
-		user_defined_first_step_ = true;
+		this->first_step_ = first_step;
+		this->user_defined_first_step_ = true;
 	}		
 
 	template<typename Vector, typename Solver>
